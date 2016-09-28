@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="com.example.android.softkeyboard.ImePreferences"
+    android:supportsSwitchingToNextInputMethod="true"
+    >
+    <subtype
+        android:name="WhatsApp Spam Keyboard"
+        android:imeSubtypeLocale="WhatsApp Spam"
+        android:imeSubtypeMode="keyboard" />
+</input-method>
