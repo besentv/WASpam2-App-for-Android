@@ -3,12 +3,13 @@
         android:keyWidth="50%p"
         android:horizontalGap="0px"
         android:verticalGap="0px"
-        android:keyHeight="40dp"
+        android:keyHeight="60dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         >
         <Row>
             <Key android:codes="1" android:keyLabel="Spam" android:keyEdgeFlags="left"/>
+            <Key android:codes="3" android:keyLabel="Stop spam"  android:keyEdgeFlags="right"/>
             <Key android:codes="2" android:keyIcon="@drawable/ic_settings_black_24dp"  android:keyEdgeFlags="right"/>
         </Row>
     </Keyboard>

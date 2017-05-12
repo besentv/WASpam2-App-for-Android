@@ -8,10 +8,11 @@ import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
+
+import java.util.List;
 
 
 public class SpamKeyboard extends InputMethodService implements KeyboardView.OnKeyboardActionListener
@@ -20,22 +21,16 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
 
     private KeyboardView inputView;
     private Keyboard spamKeyboard;
-    private boolean spamming = false;
     private boolean gotInputConnection = false;
-    final int loops = 1;
-    private int loopsDone = 0;
-    private InputConnection ic;
-    public static String message = " ";
+    public static InputConnection ic;
+    private List<Keyboard.Key> keys;
 
 
     @Override
     public void onCreate() {
-        spamming = false;
         super.onCreate();
 
-
     }
-
 
 
     @Override
@@ -45,7 +40,7 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
         spamKeyboard = new Keyboard(this, R.xml.keyboard_spam);
         inputView.setOnKeyboardActionListener(this);
         inputView.setKeyboard(spamKeyboard);
-
+keys = spamKeyboard.getKeys();
         return inputView;
     }
 
@@ -62,34 +57,36 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        final Handler handler = new Handler();
-        if(!gotInputConnection) {
+        if (!gotInputConnection) {
             ic = getCurrentInputConnection();
         }
         switch (primaryCode) {
             case 1:
-   //for(int i= 0; i<100; i++) {
-        ic.commitText(Settings.spamMessage, 1);
-     //     handler.postDelayed(new Runnable() {
-       //       @Override
-         //     public void run() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            for (int i = 0; i < Settings.spamAmount; i++) {
+                                ic = getCurrentInputConnection();
+                                ic.commitText(Settings.spamMessage, 1);
+                                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+                                Thread.sleep(Settings.spamDelay);
 
-        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
-        //ic.commitText("_", 1);
-            // }
-        //}, 100);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-        //  loopsDone++;
-
-        // loopsDone = 0;
-   // }
+                    }
+                }).start();
                 break;
             case 2:
-                    Intent settings = new Intent(SpamKeyboard.this , Settings.class);
-
-                    settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(settings);
-
+                Intent settings = new Intent(SpamKeyboard.this, Settings.class);
+                settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(settings);
+            case 3:
+                //keys.get(1).text = "aaaaaaaaaa";
+                Settings.spamAmount = 1;
                 break;
             default:
                 char code = (char) primaryCode;

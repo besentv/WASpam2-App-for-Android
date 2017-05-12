@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true" android:focusableInTouchMode="true"
     tools:context="xyz.besentv.waspam2.Settings">
 
 
@@ -34,18 +35,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/editTextAmount"
-        android:hint="Amount"
-        android:maxLength="4"
-        android:layout_below="@+id/TextViewAmount"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-         />
 
     <TextView
         android:text="Amount:"
@@ -54,8 +43,41 @@
         tools:textStyle="bold"
         android:textStyle="bold"
         android:textSize="24sp"
+        android:id="@+id/TextViewAmount"
         android:layout_below="@+id/editTextMessage"
-        android:layout_alignLeft="@+id/TextViewSpamText"
-        android:layout_marginTop="130dp"
-        android:id="@+id/TextViewAmount" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextViewAmount"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/numberPicker" />
+
+    <TextView
+        android:text="Delay:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:textStyle="bold"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:id="@+id/TextViewDelay"
+        android:layout_below="@+id/numberPicker"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editDelayAmount"
+        android:hint="delay in milliseconds"
+        android:maxLength="5"
+        android:layout_below="@+id/TextViewDelay"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
