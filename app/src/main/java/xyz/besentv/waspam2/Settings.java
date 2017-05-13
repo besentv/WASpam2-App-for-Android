@@ -1,12 +1,16 @@
 package xyz.besentv.waspam2;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.view.inputmethod.InputMethodManager;
 
 
-public class Settings extends AppCompatActivity {
+
+public class Settings extends Activity {
 
 
     private EditText messageInput;
@@ -18,10 +22,11 @@ public class Settings extends AppCompatActivity {
     public static int spamDelay = 1;
     private NumberPicker numberPicker;
     private EditText editDelayAmount;
+    private Button changeKeyboardButton;
+    private InputMethodManager inputMethodManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         editDelayAmount = (EditText) findViewById(R.id.editDelayAmount);
         editDelayAmount.setText(new Integer(spamDelay).toString());
@@ -30,7 +35,15 @@ public class Settings extends AppCompatActivity {
         numberPicker.setMinValue(1);
         numberPicker.setValue(1);
         messageInput = (EditText) findViewById(R.id.editTextMessage);
-
+        changeKeyboardButton = (Button) findViewById(R.id.changeKeyboardButton);
+        changeKeyboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.showInputMethodPicker();
+            }
+        });
+        super.onCreate(savedInstanceState);
     }
     @Override
     protected void onResume() {

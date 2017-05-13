@@ -4,7 +4,7 @@
     android:supportsSwitchingToNextInputMethod="true"
     >
     <subtype
-        android:name="WhatsApp Spam Keyboard"
-        android:imeSubtypeLocale="WhatsApp Spam"
+        android:name="WA Spam 2"
+        android:imeSubtypeLocale="WhatsApp Spam Keyboard"
         android:imeSubtypeMode="keyboard" />
 </input-method>

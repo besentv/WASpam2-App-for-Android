@@ -1,83 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:focusable="true" android:focusableInTouchMode="true"
     tools:context="xyz.besentv.waspam2.Settings">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:text="SpamText:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:textStyle="bold"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:id="@+id/TextViewSpamText"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/editTextMessage"
-        android:hint="SpamText"
-        android:layout_below="@+id/TextViewSpamText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <Button
+                android:text="Change Keyboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/changeKeyboardButton" />
+            <TextView
+                android:id="@+id/TextViewSpamText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SpamText:"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                tools:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editTextMessage"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="SpamText"
+                android:inputType="text"
+                android:lines="6"
+                android:maxLength="500"
+                android:textColor="@color/colorPrimary"
+                android:scrollbars="vertical" />
 
 
-    <TextView
-        android:text="Amount:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:textStyle="bold"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:id="@+id/TextViewAmount"
-        android:layout_below="@+id/editTextMessage"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/TextViewAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount:"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                tools:textStyle="bold" />
 
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/TextViewAmount"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/numberPicker" />
+            <NumberPicker
+                android:id="@+id/numberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <TextView
-        android:text="Delay:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:textStyle="bold"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:id="@+id/TextViewDelay"
-        android:layout_below="@+id/numberPicker"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+            <TextView
+                android:id="@+id/TextViewDelay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delay:"
+                android:textSize="24sp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                tools:textStyle="bold" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editDelayAmount"
-        android:hint="delay in milliseconds"
-        android:maxLength="5"
-        android:layout_below="@+id/TextViewDelay"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <EditText
+                android:id="@+id/editDelayAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:hint="delay in milliseconds"
+                android:inputType="number"
+                android:maxLength="5" />
 
-</RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
+
