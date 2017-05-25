@@ -4,10 +4,12 @@ package xyz.besentv.waspam2;
  * Created by Bernhard on 22.09.2016.
  */
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.support.v4.app.NotificationCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
@@ -25,14 +27,21 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
     private boolean isSpamming = false;
     private int spamAmount;
     private InputMethodManager inputMethodManager;
+    private NotificationManager notificationManager;
+    private NotificationCompat.Builder nBuilder;
+    private int notifyID = 1;
+
+    public SpamKeyboard(){
+
+    }
 
     @Override
     public void onCreate() {
         inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
+        notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
         super.onCreate();
 
     }
-
 
     @Override
     public View onCreateInputView() {
@@ -41,6 +50,9 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
         spamKeyboard = new Keyboard(this, R.xml.keyboard_spam);
         inputView.setOnKeyboardActionListener(this);
         inputView.setKeyboard(spamKeyboard);
+        inputView.setPreviewEnabled(false);
+        nBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Spammed Messages:").setContentText("").setOngoing(true);
+
         return inputView;
     }
 
@@ -69,12 +81,16 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                         @Override
                         public void run() {
                             try {
-                                for (int i = 0; i < spamAmount; i++) {
+                                for (int i = 1; i <= spamAmount; i++) {
                                     ic = getCurrentInputConnection();
                                     ic.commitText(Settings.spamMessage, 1);
                                     ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+                                    nBuilder.setContentText(i+" of " + spamAmount);
+                                    notificationManager.notify(notifyID,nBuilder.build());
                                     Thread.sleep(Settings.spamDelay);
-
+                                    if(i >= spamAmount){
+                                     notificationManager.cancel(notifyID);
+                                    }
                                 }
                                 isSpamming = false;
                             } catch (InterruptedException e) {
@@ -83,6 +99,7 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
 
                         }
                     }).start();
+                    notificationManager.cancel(notifyID);
                 }
                 break;
             case 2:
@@ -90,7 +107,6 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                 settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(settings);
             case 3:
-                //keys.get(1).text = "aaaaaaaaaa";
                 spamAmount = 1;
                 break;
             case 4:
