@@ -23,18 +23,19 @@
             android:orientation="vertical">
 
             <Button
-                android:text="Change Keyboard"
+                android:id="@+id/changeKeyboardButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/changeKeyboardButton" />
+                android:text="Change Keyboard" />
+
             <TextView
                 android:id="@+id/TextViewSpamText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="SpamText:"
+                android:textColor="@color/colorPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimary"
                 tools:textStyle="bold" />
 
             <EditText
@@ -45,50 +46,92 @@
                 android:inputType="text"
                 android:lines="6"
                 android:maxLength="500"
-                android:textColor="@color/colorPrimary"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                android:textColor="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/TextViewAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="Amount:"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:textStyle="bold" />
+                <!--<EditText
+                    android:id="@+id/editSpamAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:digits="0123456789"
+                    android:hint="delay in milliseconds"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:layout_weight="0.5"
+                    />-->
+
+                <TextView
+                    android:id="@+id/TextViewDelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Delay:"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:textStyle="bold" />
+            </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/TextViewAmount"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/amountPicker"
+                    ></NumberPicker>
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="95dp"
+                    android:layout_weight="0"
+                    android:id="@+id/delayPicker"
+                    ></NumberPicker>
+
+               <!-- <EditText
+                    android:id="@+id/editDelayAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:digits="0123456789"
+                    android:hint="delay in milliseconds"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:layout_weight="0.5"
+                    /> -->
+            </LinearLayout>
+            <Switch
+                android:text="Spam confirmation"
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Amount:"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimary"
-                tools:textStyle="bold" />
-
-            <NumberPicker
-                android:id="@+id/numberPicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/TextViewDelay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delay:"
-                android:textSize="24sp"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"
-                tools:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/editDelayAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:hint="delay in milliseconds"
-                android:inputType="number"
-                android:digits="0123456789"
-                android:maxLength="5" />
-
-
+                android:id="@+id/needsConfirmSwitch" />
         </LinearLayout>
     </ScrollView>
-
-
 </LinearLayout>
 

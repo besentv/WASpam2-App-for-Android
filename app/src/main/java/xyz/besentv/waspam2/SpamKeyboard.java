@@ -1,7 +1,7 @@
 package xyz.besentv.waspam2;
 
 /**
- * Created by Bernhard on 22.09.2016.
+ * Created by besentv on 22.09.2016.
  */
 
 import android.app.NotificationManager;
@@ -31,7 +31,7 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
     private NotificationCompat.Builder nBuilder;
     private int notifyID = 1;
 
-    public SpamKeyboard(){
+    public SpamKeyboard() {
 
     }
 
@@ -66,6 +66,41 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
 
     }
 
+    @Override
+    public void onWindowHidden(){
+        super.onWindowHidden();
+        spamAmount = 1;
+    }
+
+    private void spam() {
+        if (!isSpamming) {
+            isSpamming = true;
+            spamAmount = Settings.spamAmount;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        for (int i = 1; i <= spamAmount; i++) {
+                            ic = getCurrentInputConnection();
+                            ic.commitText(Settings.spamMessage, 1);
+                            ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+                            nBuilder.setContentText(i + " of " + spamAmount);
+                            notificationManager.notify(notifyID, nBuilder.build());
+                            Thread.sleep(Settings.spamDelay);
+                            if (i >= spamAmount) {
+                                notificationManager.cancel(notifyID);
+                            }
+                        }
+                        isSpamming = false;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+            notificationManager.cancel(notifyID);
+        }
+    }
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
@@ -74,33 +109,7 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
         }
         switch (primaryCode) {
             case 1:
-                if (!isSpamming) {
-                    isSpamming = true;
-                    spamAmount = Settings.spamAmount;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                for (int i = 1; i <= spamAmount; i++) {
-                                    ic = getCurrentInputConnection();
-                                    ic.commitText(Settings.spamMessage, 1);
-                                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
-                                    nBuilder.setContentText(i+" of " + spamAmount);
-                                    notificationManager.notify(notifyID,nBuilder.build());
-                                    Thread.sleep(Settings.spamDelay);
-                                    if(i >= spamAmount){
-                                     notificationManager.cancel(notifyID);
-                                    }
-                                }
-                                isSpamming = false;
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }).start();
-                    notificationManager.cancel(notifyID);
-                }
+                    spam();
                 break;
             case 2:
                 Intent settings = new Intent(SpamKeyboard.this, Settings.class);
@@ -113,7 +122,6 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                 inputMethodManager.showInputMethodPicker();
                 break;
             default:
-                char code = (char) primaryCode;
                 ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
         }
     }

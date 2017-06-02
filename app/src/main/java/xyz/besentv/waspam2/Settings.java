@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,16 +36,19 @@ public class Settings extends Activity {
     private final String spamMessageStateString = "spamMessage";
     private final String spamAmountStateString = "spamAmount";
     private final String spamDelayStateString = "spamDelay";
+    private final String needSpamConfirmationStateString = "needSpamConfirmation";
     public static String spamMessage = "";
-    public static int spamAmount = 0;
+    public static int spamAmount = 1;
     public static int spamDelay = 1;
+    public static boolean needSpamConfirmation = false;
     private JSONObject settingsJSON = null;
-    private NumberPicker numberPicker;
-    private EditText editDelayAmount;
+    private NumberPicker delayAmountPicker;
+    private NumberPicker editAmountPicker;
     private Button changeKeyboardButton;
     private InputMethodManager inputMethodManager;
     private boolean settingsLoaded = false;
     private int permissionGrantID = 1;
+    private Switch needsConfirmSwitch;
 
     public Settings() throws JSONException, IOException {
 
@@ -101,13 +106,22 @@ public class Settings extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_settings);
-        editDelayAmount = (EditText) findViewById(R.id.editDelayAmount);
-        editDelayAmount.setText(new Integer(spamDelay).toString());
-        numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
-        numberPicker.setMaxValue(9999);
-        numberPicker.setMinValue(1);
-        numberPicker.setValue(1);
+        delayAmountPicker = (NumberPicker) findViewById(R.id.delayPicker);
+        delayAmountPicker.setValue(spamDelay);
+        delayAmountPicker.setMaxValue(99999);
+        delayAmountPicker.setValue(1);
+        editAmountPicker = (NumberPicker) findViewById(R.id.amountPicker);
+        editAmountPicker.setValue(spamAmount);
+        editAmountPicker.setMaxValue(99999);
+        editAmountPicker.setMinValue(1);
         messageInput = (EditText) findViewById(R.id.editTextMessage);
+        needsConfirmSwitch = (Switch) findViewById(R.id.needsConfirmSwitch);
+        needsConfirmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                needSpamConfirmation = isChecked;
+            }
+        });
         changeKeyboardButton = (Button) findViewById(R.id.changeKeyboardButton);
         changeKeyboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +137,7 @@ public class Settings extends Activity {
                 spamMessage = settingsJSON.getString(spamMessageStateString);
                 spamDelay = settingsJSON.getInt(spamDelayStateString);
                 spamAmount = settingsJSON.getInt(spamAmountStateString);
+                needSpamConfirmation = settingsJSON.getBoolean(needSpamConfirmationStateString);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -139,17 +154,17 @@ public class Settings extends Activity {
                 dir.mkdir();
             }
         }
-            try {
-                if (loadSettingsFile() == null) {
-                    Log.d("LOL", "SETT FILE NULL");
-                    settingsJSON = new JSONObject();
-                } else {
-                    settingsJSON = loadSettingsFile();
-                    settingsLoaded = true;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        try {
+            if (loadSettingsFile() == null) {
+                Log.d("LOL", "SETT FILE NULL");
+                settingsJSON = new JSONObject();
+            } else {
+                settingsJSON = loadSettingsFile();
+                settingsLoaded = true;
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -158,8 +173,9 @@ public class Settings extends Activity {
 
         super.onResume();
         messageInput.setText(spamMessage);
-        numberPicker.setValue(spamAmount);
-        editDelayAmount.setText(new Integer(spamDelay).toString());
+        editAmountPicker.setValue(spamAmount);
+        delayAmountPicker.setValue(spamDelay);
+        needsConfirmSwitch.setChecked(needSpamConfirmation);
     }
 
     @Override
@@ -188,20 +204,17 @@ public class Settings extends Activity {
     protected void onPause() {
         super.onPause();
         spamMessage = messageInput.getText().toString();
-        spamAmount = numberPicker.getValue();
-        if (!editDelayAmount.getText().toString().equals("")) {
-            spamDelay = Integer.parseInt(editDelayAmount.getText().toString());
-        } else {
-            spamDelay = 1;
+        spamAmount = editAmountPicker.getValue();
+        spamDelay = delayAmountPicker.getValue();
+        try {
+            settingsJSON.put(spamMessageStateString, spamMessage);
+            settingsJSON.put(spamAmountStateString, spamAmount);
+            settingsJSON.put(spamDelayStateString, spamDelay);
+            settingsJSON.put(needSpamConfirmationStateString,needSpamConfirmation);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-            try {
-                settingsJSON.put(spamMessageStateString, spamMessage);
-                settingsJSON.put(spamAmountStateString, spamAmount);
-                settingsJSON.put(spamDelayStateString, spamDelay);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            writeSettingsFile(settingsJSON);
-        }
+        writeSettingsFile(settingsJSON);
+    }
 
 }
