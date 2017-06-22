@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -116,20 +118,8 @@ public class Settings extends Activity {
         editAmountPicker.setMinValue(1);
         messageInput = (EditText) findViewById(R.id.editTextMessage);
         needsConfirmSwitch = (Switch) findViewById(R.id.needsConfirmSwitch);
-        needsConfirmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                needSpamConfirmation = isChecked;
-            }
-        });
         changeKeyboardButton = (Button) findViewById(R.id.changeKeyboardButton);
-        changeKeyboardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.showInputMethodPicker();
-            }
-        });
+
         super.onCreate(savedInstanceState);
         getSettings();
         if (settingsLoaded) {
@@ -145,6 +135,7 @@ public class Settings extends Activity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, permissionGrantID);
         }
+        addListeners();
     }
 
     private void getSettings() {
@@ -217,4 +208,62 @@ public class Settings extends Activity {
         writeSettingsFile(settingsJSON);
     }
 
+    private void addListeners(){
+        changeKeyboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.showInputMethodPicker();
+            }
+        });
+        delayAmountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                spamDelay = newVal;
+                try {
+                    settingsJSON.put(spamDelayStateString, spamDelay);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        editAmountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                spamAmount = newVal;
+                try {
+                    settingsJSON.put(spamAmountStateString, spamAmount);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        messageInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                spamMessage = messageInput.getText().toString();
+                try {
+                    settingsJSON.put(spamMessageStateString, spamMessage);;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        needsConfirmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                needSpamConfirmation = isChecked;
+            }
+        });
+    }
 }
