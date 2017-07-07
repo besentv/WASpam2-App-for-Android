@@ -20,7 +20,8 @@
                 android:name="android.view.im"
                 android:resource="@xml/method" />
         </service>
-        <activity android:name=".Settings">
+        <activity android:name=".Settings"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

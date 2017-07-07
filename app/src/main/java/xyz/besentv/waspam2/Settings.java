@@ -2,7 +2,9 @@ package xyz.besentv.waspam2;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,10 +50,13 @@ public class Settings extends Activity {
     private NumberPicker delayAmountPicker;
     private NumberPicker editAmountPicker;
     private Button changeKeyboardButton;
+    private Button openWhatsappButton;
     private InputMethodManager inputMethodManager;
     private boolean settingsLoaded = false;
     private int permissionGrantID = 1;
     private Switch needsConfirmSwitch;
+    private TextView gotoBesentv;
+
 
     public Settings() throws JSONException, IOException {
 
@@ -119,6 +125,8 @@ public class Settings extends Activity {
         messageInput = (EditText) findViewById(R.id.editTextMessage);
         needsConfirmSwitch = (Switch) findViewById(R.id.needsConfirmSwitch);
         changeKeyboardButton = (Button) findViewById(R.id.changeKeyboardButton);
+        openWhatsappButton = (Button) findViewById(R.id.openWhatsappButton);
+        gotoBesentv = (TextView) findViewById(R.id.goto_besentv);
 
         super.onCreate(savedInstanceState);
         getSettings();
@@ -201,19 +209,20 @@ public class Settings extends Activity {
             settingsJSON.put(spamMessageStateString, spamMessage);
             settingsJSON.put(spamAmountStateString, spamAmount);
             settingsJSON.put(spamDelayStateString, spamDelay);
-            settingsJSON.put(needSpamConfirmationStateString,needSpamConfirmation);
+            settingsJSON.put(needSpamConfirmationStateString, needSpamConfirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         writeSettingsFile(settingsJSON);
     }
 
-    private void addListeners(){
+    private void addListeners() {
         changeKeyboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.showInputMethodPicker();
+                writeSettingsFile(settingsJSON);
             }
         });
         delayAmountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -253,17 +262,39 @@ public class Settings extends Activity {
             public void afterTextChanged(Editable s) {
                 spamMessage = messageInput.getText().toString();
                 try {
-                    settingsJSON.put(spamMessageStateString, spamMessage);;
+                    settingsJSON.put(spamMessageStateString, spamMessage);
+                    ;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+
+
         needsConfirmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 needSpamConfirmation = isChecked;
             }
         });
+
+        openWhatsappButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openWa = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
+                if(openWa != null){
+                    startActivity(openWa);
+                }
+            }
+        });
+        gotoBesentv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent gotoBesentv = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/besentv"));
+                startActivity(gotoBesentv);
+                return false;
+            }
+        });
     }
+
 }

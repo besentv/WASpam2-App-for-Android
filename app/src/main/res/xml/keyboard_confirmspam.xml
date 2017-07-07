@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+        android:keyWidth="50%p"
+        android:horizontalGap="3dp"
+        android:verticalGap="3dp"
+        android:keyHeight="60dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        >
+        <Row>
+            <Key android:codes="-2" android:keyLabel=""  android:keyEdgeFlags="left" android:keyWidth="0dp"/>
+            <Key android:codes="-1" android:keyLabel="Are you sure you want to start spamming?" android:keyWidth="110%p"/>
+            <Key android:codes="-3" android:keyLabel=""  android:keyEdgeFlags="right" android:keyWidth="0dp"/>
+        </Row>
+        <Row>
+            <Key android:codes="6" android:keyIcon="@drawable/ic_close_red_24dp"  android:keyEdgeFlags="left"/>
+            <Key android:codes="5" android:keyIcon="@drawable/ic_check_green_24dp"  android:keyEdgeFlags="right"/>
+        </Row>
+    </Keyboard>
+</PreferenceScreen>

@@ -22,6 +22,7 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
 
     private KeyboardView inputView;
     private Keyboard spamKeyboard;
+    private Keyboard spamConfirmKeyboard;
     private boolean gotInputConnection = false;
     public static InputConnection ic;
     private boolean isSpamming = false;
@@ -48,10 +49,12 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
         super.onCreateInputView();
         inputView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard, null);
         spamKeyboard = new Keyboard(this, R.xml.keyboard_spam);
+        spamConfirmKeyboard = new Keyboard(this, R.xml.keyboard_confirmspam);
         inputView.setOnKeyboardActionListener(this);
         inputView.setKeyboard(spamKeyboard);
         inputView.setPreviewEnabled(false);
         nBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Spammed Messages:").setContentText("").setOngoing(true);
+
 
         return inputView;
     }
@@ -67,8 +70,9 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
     }
 
     @Override
-    public void onWindowHidden(){
+    public void onWindowHidden() {
         super.onWindowHidden();
+        inputView.setKeyboard(spamKeyboard);
         spamAmount = 1;
     }
 
@@ -109,11 +113,15 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
         }
         switch (primaryCode) {
             case 1:
-                    spam();
+                if (Settings.needSpamConfirmation && !isSpamming) {
+                    inputView.setKeyboard(spamConfirmKeyboard);
+                    return;
+                }
+                spam();
                 break;
             case 2:
                 Intent settings = new Intent(SpamKeyboard.this, Settings.class);
-                settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                settings.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(settings);
             case 3:
                 spamAmount = 1;
@@ -121,8 +129,15 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
             case 4:
                 inputMethodManager.showInputMethodPicker();
                 break;
+            case 5:
+                inputView.setKeyboard(spamKeyboard);
+                spam();
+                break;
+            case 6:
+                inputView.setKeyboard(spamKeyboard);
+                break;
             default:
-                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                return;
         }
     }
 
