@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -34,9 +33,8 @@ import java.io.InputStreamReader;
 
 public class Settings extends Activity {
 
-
     private EditText messageInput;
-    private final String settingsFilePath = Environment.getExternalStorageDirectory().getPath() + "/WASpam2";
+    private final String settingsFilePath = Environment.getExternalStorageDirectory().getPath() + "/besentv.xyz/WASpam2";
     private final String settingsFileName = "/waspam2settingsSave.json";
     private final String spamMessageStateString = "spamMessage";
     private final String spamAmountStateString = "spamAmount";
@@ -52,15 +50,9 @@ public class Settings extends Activity {
     private Button changeKeyboardButton;
     private Button openWhatsappButton;
     private InputMethodManager inputMethodManager;
-    private boolean settingsLoaded = false;
     private int permissionGrantID = 1;
     private Switch needsConfirmSwitch;
     private TextView gotoBesentv;
-
-
-    public Settings() throws JSONException, IOException {
-
-    }
 
     private void writeSettingsFile(JSONObject settings) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -87,28 +79,28 @@ public class Settings extends Activity {
     }
 
     private JSONObject loadSettingsFile() throws JSONException {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return null;
-        }
-        File file = new File(settingsFilePath + settingsFileName);
-        if (file.length() == 0) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        FileInputStream fis = null;
-        int ch;
-        try {
-            fis = new FileInputStream(file);
-            InputStreamReader reader = new InputStreamReader(fis, "UTF-8");
-            while ((ch = reader.read()) != -1) {
-                sb.append((char) ch);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            File file = new File(settingsFilePath + settingsFileName);
+            if (file.length() == 0) {
+                return null;
             }
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            StringBuilder sb = new StringBuilder();
+            FileInputStream fis = null;
+            int ch;
+            try {
+                fis = new FileInputStream(file);
+                InputStreamReader reader = new InputStreamReader(fis, "UTF-8");
+                while ((ch = reader.read()) != -1) {
+                    sb.append((char) ch);
+                }
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new JSONObject(sb.toString());
         }
-        return new JSONObject(sb.toString());
+        return null;
     }
 
     @Override
@@ -129,8 +121,10 @@ public class Settings extends Activity {
         gotoBesentv = (TextView) findViewById(R.id.goto_besentv);
 
         super.onCreate(savedInstanceState);
-        getSettings();
-        if (settingsLoaded) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, permissionGrantID);
+        }
+        if (getSettings()) {
             try {
                 spamMessage = settingsJSON.getString(spamMessageStateString);
                 spamDelay = settingsJSON.getInt(spamDelayStateString);
@@ -140,31 +134,29 @@ public class Settings extends Activity {
                 e.printStackTrace();
             }
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, permissionGrantID);
-        }
         addListeners();
     }
 
-    private void getSettings() {
+    /*
+    *returns true if settings were found on file */
+    private boolean getSettings() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             File dir = new File(settingsFilePath);
             if (!dir.exists()) {
-                dir.mkdir();
+                dir.mkdirs();
             }
         }
         try {
-            if (loadSettingsFile() == null) {
-                Log.d("LOL", "SETT FILE NULL");
+            settingsJSON = loadSettingsFile();
+            if (settingsJSON == null) {
                 settingsJSON = new JSONObject();
             } else {
-                settingsJSON = loadSettingsFile();
-                settingsLoaded = true;
+                return true;
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        return false;
     }
 
     @Override
@@ -184,8 +176,6 @@ public class Settings extends Activity {
         savedInstanceState.putInt(spamAmountStateString, spamAmount);
         savedInstanceState.putInt(spamDelayStateString, spamDelay);
         super.onSaveInstanceState(savedInstanceState);
-
-
     }
 
     @Override
@@ -195,7 +185,6 @@ public class Settings extends Activity {
         spamMessage = savedInstanceState.getString(spamMessageStateString);
         spamAmount = savedInstanceState.getInt(spamAmountStateString);
         spamDelay = savedInstanceState.getInt(spamDelayStateString);
-
     }
 
 
@@ -263,13 +252,11 @@ public class Settings extends Activity {
                 spamMessage = messageInput.getText().toString();
                 try {
                     settingsJSON.put(spamMessageStateString, spamMessage);
-                    ;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-
 
         needsConfirmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -282,7 +269,7 @@ public class Settings extends Activity {
             @Override
             public void onClick(View v) {
                 Intent openWa = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
-                if(openWa != null){
+                if (openWa != null) {
                     startActivity(openWa);
                 }
             }
@@ -296,5 +283,4 @@ public class Settings extends Activity {
             }
         });
     }
-
 }

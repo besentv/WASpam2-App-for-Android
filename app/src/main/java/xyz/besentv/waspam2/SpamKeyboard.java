@@ -23,7 +23,6 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
     private KeyboardView inputView;
     private Keyboard spamKeyboard;
     private Keyboard spamConfirmKeyboard;
-    private boolean gotInputConnection = false;
     public static InputConnection ic;
     private boolean isSpamming = false;
     private int spamAmount;
@@ -92,9 +91,10 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                             notificationManager.notify(notifyID, nBuilder.build());
                             Thread.sleep(Settings.spamDelay);
                             if (i >= spamAmount) {
-                                notificationManager.cancel(notifyID);
+
                             }
                         }
+                        notificationManager.cancel(notifyID);
                         isSpamming = false;
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -108,9 +108,6 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        if (!gotInputConnection) {
-            ic = getCurrentInputConnection();
-        }
         switch (primaryCode) {
             case 1:
                 if (Settings.needSpamConfirmation && !isSpamming) {
