@@ -115,12 +115,12 @@ public class Settings extends Activity {
         };*/
         delayAmountPicker = (NumberPicker) findViewById(R.id.delayPicker);
         delayAmountPicker.setValue(spamDelay);
-        delayAmountPicker.setMaxValue(2000);
+        delayAmountPicker.setMaxValue(99999);
         delayAmountPicker.setValue(1);
        // delayAmountPicker.setFormatter(formatter);
         editAmountPicker = (NumberPicker) findViewById(R.id.amountPicker);
         editAmountPicker.setValue(spamAmount);
-        editAmountPicker.setMaxValue(2000);
+        editAmountPicker.setMaxValue(99999);
         editAmountPicker.setMinValue(1);
        // editAmountPicker.setFormatter(formatter);
         messageInput = (EditText) findViewById(R.id.editTextMessage);
