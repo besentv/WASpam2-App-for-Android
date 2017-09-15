@@ -140,6 +140,8 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                 /*0x0102001f = select all*/
                 inputConnection.performContextMenuAction(0x0102001f);
                 text = inputConnection.getSelectedText(0);
+                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
+                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL));
                 inputConnection.setSelection(0,0);
                 if(text != null){
                     Settings.spamMessage = text.toString();
