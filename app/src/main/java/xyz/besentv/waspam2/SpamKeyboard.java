@@ -10,6 +10,7 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
@@ -133,6 +134,17 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
             case 6:
                 inputView.setKeyboard(spamKeyboard);
                 break;
+            case 7:
+                InputConnection inputConnection = getCurrentInputConnection();
+                CharSequence text;
+                /*0x0102001f = select all*/
+                inputConnection.performContextMenuAction(0x0102001f);
+                text = inputConnection.getSelectedText(0);
+                inputConnection.setSelection(0,0);
+                if(text != null){
+                    Settings.spamMessage = text.toString();
+                    Log.d("WASpam2", "Inputconn String:" + text.toString());
+                }
             default:
                 return;
         }

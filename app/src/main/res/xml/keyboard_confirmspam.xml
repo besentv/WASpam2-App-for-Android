@@ -9,13 +9,13 @@
         android:layout_width="wrap_content"
         >
         <Row>
-            <Key android:codes="-2" android:keyLabel=""  android:keyEdgeFlags="left" android:keyWidth="0dp"/>
-            <Key android:codes="-1" android:keyLabel="Are you sure you want to start spamming?" android:keyWidth="110%p"/>
-            <Key android:codes="-3" android:keyLabel=""  android:keyEdgeFlags="right" android:keyWidth="0dp"/>
-        </Row>
-        <Row>
-            <Key android:codes="6" android:keyIcon="@drawable/ic_close_red_24dp"  android:keyEdgeFlags="left"/>
-            <Key android:codes="5" android:keyIcon="@drawable/ic_check_green_24dp"  android:keyEdgeFlags="right"/>
-        </Row>
-    </Keyboard>
-</PreferenceScreen>
+           <!-- <Key android:codes="-2" android:keyLabel=""  android:keyEdgeFlags="left" android:keyWidth="0dp"/> -->
+            <Key android:codes="-1" android:keyLabel="Are you sure?" android:keyWidth="98%p" android:keyEdgeFlags="right"/>
+            <!--  <Key android:codes="-3" android:keyLabel=""  android:keyEdgeFlags="right" android:keyWidth="0dp"/> -->
+         </Row>
+         <Row>
+             <Key android:codes="6" android:keyIcon="@drawable/ic_close_red_24dp" android:keyWidth="49%p"  android:keyEdgeFlags="left"/>
+             <Key android:codes="5" android:keyIcon="@drawable/ic_check_green_24dp" android:keyWidth="49%p" android:keyEdgeFlags="right" />
+         </Row>
+     </Keyboard>
+ </PreferenceScreen>

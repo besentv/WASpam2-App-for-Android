@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
     <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-        android:keyWidth="30%p"
+        android:keyWidth="50%p"
         android:horizontalGap="3dp"
-        android:verticalGap="0dp"
+        android:verticalGap="3dp"
         android:keyHeight="60dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         >
         <Row>
             <Key android:codes="1" android:keyLabel="Spam"  android:keyEdgeFlags="left"/>
-            <Key android:codes="3" android:keyLabel="Stop spam"/>
-            <Key android:codes="2" android:keyIcon="@drawable/ic_settings_white_24dp"/>
-            <Key android:codes="4" android:keyIcon="@drawable/ic_keyboard_white_24dp"  android:keyEdgeFlags="right"/>
+            <Key android:codes="3" android:keyLabel="Stop spam"  android:keyEdgeFlags="right"/>
+        </Row>
+        <Row>
+            <Key android:codes="2" android:keyIcon="@drawable/ic_settings_white_24dp" android:keyEdgeFlags="left"/>
+            <Key android:codes="4" android:keyIcon="@drawable/ic_keyboard_white_24dp"/>
+            <Key android:codes="7" android:keyLabel="Steal text" android:keyEdgeFlags="right"/>
         </Row>
     </Keyboard>

@@ -106,14 +106,23 @@ public class Settings extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_settings);
+/*        NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
+            @Override
+            public String format(int value) {
+                int temp = value * 5;
+                return "" + temp;
+            }
+        };*/
         delayAmountPicker = (NumberPicker) findViewById(R.id.delayPicker);
         delayAmountPicker.setValue(spamDelay);
-        delayAmountPicker.setMaxValue(99999);
+        delayAmountPicker.setMaxValue(2000);
         delayAmountPicker.setValue(1);
+       // delayAmountPicker.setFormatter(formatter);
         editAmountPicker = (NumberPicker) findViewById(R.id.amountPicker);
         editAmountPicker.setValue(spamAmount);
-        editAmountPicker.setMaxValue(99999);
+        editAmountPicker.setMaxValue(2000);
         editAmountPicker.setMinValue(1);
+       // editAmountPicker.setFormatter(formatter);
         messageInput = (EditText) findViewById(R.id.editTextMessage);
         needsConfirmSwitch = (Switch) findViewById(R.id.needsConfirmSwitch);
         changeKeyboardButton = (Button) findViewById(R.id.changeKeyboardButton);
