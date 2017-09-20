@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 
 public class SpamKeyboard extends InputMethodService implements KeyboardView.OnKeyboardActionListener
@@ -99,6 +100,7 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                         isSpamming = false;
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        isSpamming = false;
                     }
 
                 }
@@ -111,11 +113,13 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
     public void onKey(int primaryCode, int[] keyCodes) {
         switch (primaryCode) {
             case 1:
-                if (Settings.needSpamConfirmation && !isSpamming) {
+                if (isSpamming) {
+                    Toast.makeText(getApplicationContext(), "Spam Thread is running! Please wait for it to end.", Toast.LENGTH_SHORT).show();
+                } else if (Settings.needSpamConfirmation && !isSpamming) {
                     inputView.setKeyboard(spamConfirmKeyboard);
                     return;
-                }
-                spam();
+                } else
+                    spam();
                 break;
             case 2:
                 Intent settings = new Intent(SpamKeyboard.this, Settings.class);
@@ -140,13 +144,13 @@ public class SpamKeyboard extends InputMethodService implements KeyboardView.OnK
                 /*0x0102001f = select all*/
                 inputConnection.performContextMenuAction(0x0102001f);
                 text = inputConnection.getSelectedText(0);
-                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
-                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL));
-                inputConnection.setSelection(0,0);
-                if(text != null){
+                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+                if (text != null) {
                     Settings.spamMessage = text.toString();
                     Log.d("WASpam2", "Inputconn String:" + text.toString());
                 }
+                break;
             default:
                 return;
         }
