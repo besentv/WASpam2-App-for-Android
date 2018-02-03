@@ -1,19 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-        android:keyWidth="50%p"
-        android:horizontalGap="3dp"
-        android:verticalGap="3dp"
-        android:keyHeight="60dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        >
-        <Row>
-            <Key android:codes="1" android:keyLabel="Spam"  android:keyEdgeFlags="left"/>
-            <Key android:codes="3" android:keyLabel="Stop spam"  android:keyEdgeFlags="right"/>
-        </Row>
-        <Row>
-            <Key android:codes="2" android:keyIcon="@drawable/ic_settings_white_24dp" android:keyEdgeFlags="left"/>
-            <Key android:codes="4" android:keyIcon="@drawable/ic_keyboard_white_24dp"/>
-            <Key android:codes="7" android:keyLabel="Steal text" android:keyEdgeFlags="right"/>
-        </Row>
-    </Keyboard>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:horizontalGap="3dp"
+    android:keyHeight="55dp"
+    android:keyWidth="50%p"
+    android:verticalGap="3dp">
+    <Row>
+        <Key
+            android:codes="10"
+            android:keyEdgeFlags="left"
+            android:keyHeight="48dp"
+            android:keyLabel="" />
+        <Key
+            android:codes="11"
+            android:keyHeight="48dp"
+            android:keyLabel="" />
+        <Key
+            android:codes="12"
+            android:keyEdgeFlags="right"
+            android:keyHeight="48dp"
+            android:keyLabel="" />
+    </Row>
+    <Row>
+        <Key
+            android:codes="1"
+            android:keyEdgeFlags="left"
+            android:keyLabel="Spam" />
+        <Key
+            android:codes="3"
+            android:keyEdgeFlags="right"
+            android:keyLabel="Stop spam" />
+    </Row>
+    <Row>
+        <Key
+            android:codes="2"
+            android:keyEdgeFlags="left"
+            android:keyIcon="@drawable/ic_settings_white_24dp" />
+        <Key
+            android:codes="4"
+            android:keyIcon="@drawable/ic_keyboard_white_24dp" />
+        <Key
+            android:codes="7"
+            android:keyEdgeFlags="right"
+            android:keyLabel="Steal text" />
+    </Row>
+</Keyboard>

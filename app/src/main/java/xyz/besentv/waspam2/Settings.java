@@ -24,22 +24,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 
 public class Settings extends Activity {
 
     private EditText messageInput;
-    private final String settingsFilePath = Environment.getExternalStorageDirectory().getPath() + "/besentv.xyz/WASpam2";
-    private final String settingsFileName = "/waspam2settingsSave.json";
-    private final String spamMessageStateString = "spamMessage";
-    private final String spamAmountStateString = "spamAmount";
-    private final String spamDelayStateString = "spamDelay";
-    private final String needSpamConfirmationStateString = "needSpamConfirmation";
+    public static final String settingsFilePath = Environment.getExternalStorageDirectory().getPath() + "/besentv.xyz/WASpam2";
+    public static final String settingsFileName = "/waspam2settingsSave.json";
+    public static final String spamMessageStateString = "spamMessage";
+    public static final String spamAmountStateString = "spamAmount";
+    public static final String spamDelayStateString = "spamDelay";
+    public static final String needSpamConfirmationStateString = "needSpamConfirmation";
+    public static final String recentMessagesStateString = "recentMessages";
+    public static String[] recentMessages = {"","",""};
     public static String spamMessage = "";
     public static int spamAmount = 1;
     public static int spamDelay = 1;
@@ -53,81 +50,25 @@ public class Settings extends Activity {
     private int permissionGrantID = 1;
     private Switch needsConfirmSwitch;
     private TextView gotoBesentv;
-
-    private void writeSettingsFile(JSONObject settings) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            File file = new File(settingsFilePath + settingsFileName);
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(file);
-
-                try {
-                    fos.write(settings.toString().getBytes());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private JSONObject loadSettingsFile() throws JSONException {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            File file = new File(settingsFilePath + settingsFileName);
-            if (file.length() == 0) {
-                return null;
-            }
-            StringBuilder sb = new StringBuilder();
-            FileInputStream fis = null;
-            int ch;
-            try {
-                fis = new FileInputStream(file);
-                InputStreamReader reader = new InputStreamReader(fis, "UTF-8");
-                while ((ch = reader.read()) != -1) {
-                    sb.append((char) ch);
-                }
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return new JSONObject(sb.toString());
-        }
-        return null;
-    }
+    private SettingsFileLoader settingsFileLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_settings);
-/*        NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
-            @Override
-            public String format(int value) {
-                int temp = value * 5;
-                return "" + temp;
-            }
-        };*/
         delayAmountPicker = (NumberPicker) findViewById(R.id.delayPicker);
         delayAmountPicker.setValue(spamDelay);
         delayAmountPicker.setMaxValue(99999);
         delayAmountPicker.setValue(1);
-       // delayAmountPicker.setFormatter(formatter);
         editAmountPicker = (NumberPicker) findViewById(R.id.amountPicker);
         editAmountPicker.setValue(spamAmount);
         editAmountPicker.setMaxValue(99999);
         editAmountPicker.setMinValue(1);
-       // editAmountPicker.setFormatter(formatter);
         messageInput = (EditText) findViewById(R.id.editTextMessage);
         needsConfirmSwitch = (Switch) findViewById(R.id.needsConfirmSwitch);
         changeKeyboardButton = (Button) findViewById(R.id.changeKeyboardButton);
         openWhatsappButton = (Button) findViewById(R.id.openWhatsappButton);
         gotoBesentv = (TextView) findViewById(R.id.goto_besentv);
+        settingsFileLoader = new SettingsFileLoader(this);
 
         super.onCreate(savedInstanceState);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -156,7 +97,7 @@ public class Settings extends Activity {
             }
         }
         try {
-            settingsJSON = loadSettingsFile();
+            settingsJSON = settingsFileLoader.loadSettingsFile();
             if (settingsJSON == null) {
                 settingsJSON = new JSONObject();
             } else {
@@ -211,7 +152,7 @@ public class Settings extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        writeSettingsFile(settingsJSON);
+        settingsFileLoader.writeSettingsFile(settingsJSON);
     }
 
     private void addListeners() {
@@ -220,7 +161,7 @@ public class Settings extends Activity {
             public void onClick(View v) {
                 inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.showInputMethodPicker();
-                writeSettingsFile(settingsJSON);
+                settingsFileLoader.writeSettingsFile(settingsJSON);
             }
         });
         delayAmountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
